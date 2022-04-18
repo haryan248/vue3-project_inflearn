@@ -2,15 +2,18 @@
     <img alt="Vue logo" src="./assets/logo.png" />
     <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
     <test />
+    <todo />
 </template>
 
 <script>
 import test from "./components/App.vue";
+import todo from "./components/todo.vue";
 
 export default {
     name: "App",
     components: {
         test,
+        todo,
     },
 };
 </script>

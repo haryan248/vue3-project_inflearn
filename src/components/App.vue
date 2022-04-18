@@ -3,8 +3,8 @@
         {{ name }}
         {{ num }}
     </div>
-    <input type="text" v-bind:value="name" />
-    <button class="btn btn-primary" @click="updateName">CLick</button>
+    <input type="text" v-bind:value="name" @input="updateInput" />
+    <button class="btn btn-primary" @click="onSubmint">CLick</button>
     <!-- v-on == @ -->
 </template>
 <script>
@@ -27,11 +27,20 @@ export default {
             nameClass.value = "name";
         };
 
+        const onSubmint = () => {
+            console.log(name.value);
+        };
+
+        const updateInput = (e) => {
+            console.log(e.target.value);
+        };
         return {
             name,
             num,
             updateName,
             nameClass,
+            onSubmint,
+            updateInput,
         };
     },
 };
