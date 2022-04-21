@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../pages";
 import Todos from "../pages/todos";
+import Todo from "../pages/todos/_id.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -16,9 +17,9 @@ const router = createRouter({
             component: Todos,
         },
         {
-            path: "/",
-            name: "Home",
-            component: "",
+            path: "/todos/:id",
+            name: "Todo",
+            component: Todo,
         },
     ],
 });
