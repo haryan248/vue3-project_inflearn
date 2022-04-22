@@ -1,6 +1,5 @@
 <template>
-    <router-view></router-view>
-    <div class="container">
+    <div>
         <h2>To-Do List</h2>
         <input class="form-control" type="text" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo" />
         <hr />
@@ -40,23 +39,17 @@ export default {
         const todos = ref([]);
         const error = ref("");
         const numberOfTodos = ref(0);
-        const limit = 5;
+        let limit = 5;
         const currentPage = ref(1);
         const searchText = ref("");
-
-        watch(currentPage, () => {
-            console.log("hello");
-        });
-
         const numberOfPages = computed(() => {
             return Math.ceil(numberOfTodos.value / limit);
         });
-
         const getTodos = async (page = currentPage.value) => {
             currentPage.value = page;
             try {
                 const res = await axios.get(
-                    `http://localhost:3000/todos?_sort=id&_order=desc&subect_like=${searchText.value}&_page=${page}&_limit=${limit}`
+                    `http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
                 );
                 numberOfTodos.value = res.headers["x-total-count"];
                 todos.value = res.data;
@@ -65,9 +58,7 @@ export default {
                 error.value = "Something went wrong.";
             }
         };
-
         getTodos();
-
         const addTodo = async (todo) => {
             // 데이터베이스 투두를 저장
             error.value = "";
@@ -82,19 +73,18 @@ export default {
                 error.value = "Something went wrong.";
             }
         };
-
         const deleteTodo = async (index) => {
             error.value = "";
             const id = todos.value[index].id;
             try {
                 await axios.delete("http://localhost:3000/todos/" + id);
+
                 getTodos(1);
             } catch (err) {
                 console.log(err);
                 error.value = "Something went wrong.";
             }
         };
-
         const toggleTodo = async (index, checked) => {
             error.value = "";
             const id = todos.value[index].id;
@@ -108,7 +98,6 @@ export default {
                 error.value = "Something went wrong.";
             }
         };
-
         let timeout = null;
         const searchTodo = () => {
             clearTimeout(timeout);
@@ -120,14 +109,13 @@ export default {
                 getTodos(1);
             }, 2000);
         });
-
         return {
+            searchTodo,
             todos,
             addTodo,
             deleteTodo,
             toggleTodo,
             searchText,
-            searchTodo,
             error,
             numberOfPages,
             currentPage,

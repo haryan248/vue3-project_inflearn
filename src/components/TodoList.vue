@@ -33,8 +33,8 @@ export default {
         const deleteTodo = (index) => {
             emit("delete-todo", index);
         };
-
         const moveToPage = (todoId) => {
+            // router.push('/todos/' + todoId);
             router.push({
                 name: "Todo",
                 params: {
