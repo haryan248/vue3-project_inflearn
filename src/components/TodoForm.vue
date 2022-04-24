@@ -6,6 +6,9 @@
                 <div class="form-group">
                     <label>Subject</label>
                     <input v-model="todo.subject" type="text" class="form-control" />
+                    <div v-if="subjectError" class="text-red">
+                        {{ subjectError }}
+                    </div>
                 </div>
             </div>
             <div v-if="editing" class="col-6">
@@ -26,10 +29,14 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" :disabled="!todoUpdated">{{ editing ? "Update" : "Create" }}</button>
+        <button type="submit" class="btn btn-primary" :disabled="!todoUpdated">
+            {{ editing ? "Update" : "Create" }}
+        </button>
         <button class="btn btn-outline-dark ml-2" @click="moveToTodoListPage">Cancel</button>
     </form>
-    <Toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
+    <transition name="fade">
+        <Toast v-if="showToast" :message="toastMessage" :type="toastAlertType" />
+    </transition>
 </template>
 
 <script>
@@ -57,6 +64,7 @@ export default {
             completed: false,
             body: "",
         });
+        const subjectError = ref("");
         const originalTodo = ref(null);
         const loading = ref(false);
         const { toastMessage, toastAlertType, showToast, triggerToast } = useToast();
@@ -91,6 +99,11 @@ export default {
             getTodo();
         }
         const onSave = async () => {
+            subjectError.value = "";
+            if (!todo.value.subject) {
+                subjectError.value = "Subject is required";
+                return;
+            }
             try {
                 let res;
                 const data = {
@@ -99,14 +112,25 @@ export default {
                     body: todo.value.body,
                 };
                 if (props.editing) {
-                    res = await axios.put(`http://localhost:3000/todos/${todoId}`, data);
+                    res = await axios.put(
+                        `
+                http://localhost:3000/todos/${todoId}
+              `,
+                        data
+                    );
                     originalTodo.value = { ...res.data };
                 } else {
-                    res = await axios.post(` http://localhost:3000/todos/`, data);
+                    res = await axios.post(
+                        `
+                http://localhost:3000/todos
+              `,
+                        data
+                    );
                     todo.value.subject = "";
                     todo.value.body = "";
                 }
-                const message = "Succesfully " + (props.editing ? "Updated!" : "Created");
+
+                const message = "Successfully " + (props.editing ? "Updated!" : "Created!");
                 triggerToast(message);
             } catch (error) {
                 console.log(error);
@@ -123,9 +147,28 @@ export default {
             showToast,
             toastMessage,
             toastAlertType,
+            subjectError,
         };
     },
 };
 </script>
 
-<style></style>
+<style scoped>
+.text-red {
+    color: red;
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+.fade-enter-to,
+.fade-leave-from {
+    opacity: 1;
+    transform: translateY(0px);
+}
+</style>
