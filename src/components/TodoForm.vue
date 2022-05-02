@@ -36,7 +36,7 @@ import axios from "@/axios";
 import { ref, computed } from "vue";
 import _ from "lodash";
 import { useToast } from "@/composables/toast";
-import Input from "@/components/Input.vue";
+import Input from "@/components/input.vue";
 export default {
     components: {
         Input,
