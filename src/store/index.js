@@ -5,7 +5,6 @@ export default createStore({
         toastMessage: "",
         toastAlertType: "",
         showToast: false,
-        timeout: null,
     },
     mutations: {
         UPDATE_TOAST_MESSAGE(state, payload) {
@@ -17,29 +16,23 @@ export default createStore({
         UPDATE_TOAST_STATUS(state, payload) {
             state.showToast = payload;
         },
-        UPDATE_TOAST_TIMEOUT(state, payload) {
-            state.timeout = payload;
-        },
     },
     actions: {
         triggerToast({ commit }, message, type = "success") {
-            // toastMessage.value = message;
             commit("UPDATE_TOAST_MESSAGE", message);
-            // toastAlertType.value = type;
             commit("UPDATE_TOAST_ALERT_TYPE", type);
-            // showToast.value = true;
             commit("UPDATE_TOAST_STATUS", true);
 
-            const timeout = setTimeout(() => {
-                //   toastMessage.value = '';
+            setTimeout(() => {
                 commit("UPDATE_TOAST_MESSAGE", "");
-                //   toastAlertType.value = '';
                 commit("UPDATE_TOAST_ALERT_TYPE", "");
-                //   showToast.value = false;
                 commit("UPDATE_TOAST_STATUS", false);
             }, 5000);
-
-            commit("UPDATE_TOAST_TIMEOUT", timeout);
+        },
+    },
+    getters: {
+        toastMessageWithSmile(state) {
+            return state.toastMessage + "^_^";
         },
     },
 });
